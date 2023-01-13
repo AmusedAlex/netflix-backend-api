@@ -14,7 +14,7 @@ const mediasJSONPath = join(
 
 const publicFolderImgPath = join(process.cwd(), "./public/img/medias");
 
-export const getMedias = () => readJSON(mediasJSONPath);
+export const getMedias = async () => readJSON(mediasJSONPath);
 
 export const writeMedias = (mediasArray) =>
   writeJSON(mediasJSONPath, mediasArray);

@@ -5,6 +5,7 @@ import {
   findMediaBySearch,
   getPDFreadableStream,
   saveNewMedia,
+  saveNewMediaFromOmdb,
 } from "../../lib/db/mediasTools.js";
 import {
   cloadinaryUploader,
@@ -40,12 +41,30 @@ mediasRouter.get("/", async (req, res, next) => {
     console.log(req.query.search);
     try {
       const mediasArray = await findMediaBySearch(req.query.search);
+      console.log("🚀 mediasArray", mediasArray);
 
       if (mediasArray.length > 0) {
         res.send(mediasArray);
       } else {
-        //   console.log(NotFound(`Media with imdbID ${req.params.id} not found!`));
-        next(NotFound(`No media with search ${req.query.search} found!`));
+        try {
+          let responseOmdb = await fetch(
+            `${process.env.FETCH_URL}${req.query.search.toLowerCase()}`,
+            { method: "GET" }
+          );
+          if (responseOmdb.ok) {
+            let data = await responseOmdb.json();
+
+            let movies = data.Search;
+
+            await saveNewMediaFromOmdb(movies);
+
+            res.send(movies);
+          } else {
+            next(NotFound(`No media with search ${req.query.search} found!`));
+          }
+        } catch (error) {
+          next(error);
+        }
       }
     } catch (error) {
       next(error);

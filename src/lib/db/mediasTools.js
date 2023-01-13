@@ -1,6 +1,5 @@
 import uniqid from "uniqid";
 import { getMedias, writeMedias } from "../filesystem/tools.js";
-import { createReadStream } from "fs";
 import PdfPrinter from "pdfmake";
 
 export const saveNewMedia = async (newMediaData) => {
@@ -19,6 +18,19 @@ export const saveNewMedia = async (newMediaData) => {
 
   return newMedia.imdbID;
 };
+export const saveNewMediaFromOmdb = async (newMediaData) => {
+  const medias = await getMedias();
+
+  const newMedia = {
+    ...newMediaData,
+  };
+
+  const arrayOfMedias = medias.concat(newMediaData);
+
+  await writeMedias(arrayOfMedias);
+
+  //   return newMedia.imdbID;
+};
 
 export const findMediaById = async (reqImdbID) => {
   console.log("searching by ID");
@@ -34,7 +46,7 @@ export const findMediaBySearch = async (requestedSearch) => {
   const medias = await getMedias();
 
   const mediasArray = await medias.filter((media) => {
-    return media.title.toLowerCase().includes(requestedSearch.toLowerCase());
+    return media.Title.toLowerCase().includes(requestedSearch.toLowerCase());
   });
 
   return mediasArray;

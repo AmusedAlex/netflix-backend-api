@@ -2,19 +2,19 @@ import { checkSchema, validationResult } from "express-validator";
 import createHttpError from "http-errors";
 
 const mediaSchema = {
-  title: {
+  Title: {
     in: ["body"],
     isString: {
       errorMessage: "Title is a mandatory field and needs to be a String.",
     },
   },
-  year: {
+  Year: {
     in: ["body"],
     isString: {
       errorMessage: "Year is a mandatory field and needs to be a String.",
     },
   },
-  type: {
+  Type: {
     in: ["body"],
     isString: {
       errorMessage: "Type is a mandatory field and needs to be a String.",
