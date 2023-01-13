@@ -1,0 +1,37 @@
+{
+  "name": "netflix-backend-api",
+  "version": "1.0.0",
+  "description": "APIs for the netflix app we built during frontend course",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -r dotenv/config -e js ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmusedAlex/netflix-backend-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmusedAlex/netflix-backend-api/issues"
+  },
+  "homepage": "https://github.com/AmusedAlex/netflix-backend-api#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-list-endpoints": "^6.0.0",
+    "express-validator": "^6.14.2",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.1.0",
+    "http-errors": "^2.0.0",
+    "multer": "^1.4.5-lts.1",
+    "uniqid": "^5.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
