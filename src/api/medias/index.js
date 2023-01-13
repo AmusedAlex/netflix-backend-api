@@ -2,6 +2,7 @@ import express from "express";
 import { checksMediaSchema, triggerBadRequest } from "./validator.js";
 import {
   findMediaById,
+  findMediaBySearch,
   getPDFreadableStream,
   saveNewMedia,
 } from "../../lib/db/mediasTools.js";
@@ -32,19 +33,35 @@ mediasRouter.post(
   }
 );
 
-// *********GET MEDIA LIST*********
+// *********GET ALL MEDIA LIST || BY SEARCH VALUE*********
 
 mediasRouter.get("/", async (req, res, next) => {
-  try {
-    const medias = await getMedias();
+  if (req.query.search) {
+    console.log(req.query.search);
+    try {
+      const mediasArray = await findMediaBySearch(req.query.search);
 
-    res.send(medias);
-  } catch (error) {
-    next(error);
+      if (mediasArray.length > 0) {
+        res.send(mediasArray);
+      } else {
+        //   console.log(NotFound(`Media with imdbID ${req.params.id} not found!`));
+        next(NotFound(`No media with search ${req.query.search} found!`));
+      }
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    try {
+      const medias = await getMedias();
+
+      res.send(medias);
+    } catch (error) {
+      next(error);
+    }
   }
 });
 
-// *********GET SINGLE MEDIA*********
+// *********GET SINGLE MEDIA BY ID*********
 
 mediasRouter.get("/:id", async (req, res, next) => {
   try {
@@ -60,6 +77,24 @@ mediasRouter.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
+// // *********GET SINGLE MEDIA BY TITLE*********
+
+// mediasRouter.get("/", async (req, res, next) => {
+//   console.log(req.query.title);
+//   try {
+//     const mediasArray = await findMediaByTitle(req.query.title);
+
+//     if (mediasArray.length > 0) {
+//       res.send(mediasArray);
+//     } else {
+//       //   console.log(NotFound(`Media with imdbID ${req.params.id} not found!`));
+//       next(NotFound(`Media with title ${req.params.title} not found!`));
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // *********POST COVER TO SINGLE MEDIA*********
 

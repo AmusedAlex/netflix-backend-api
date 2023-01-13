@@ -1,1 +1,19 @@
-[{"title":"The Lord of the Rings: The Fellowship of the Ring","year":"2001","type":"movie","createdAt":"2023-01-13T11:02:17.302Z","updatedAt":"2023-01-13T12:34:08.865Z","imdbID":"1al31zrhnklcueu2tz","poster":"https://res.cloudinary.com/di7navcq5/image/upload/v1673613249/epicode/netflixMedias/cs2uuh5y23001cgplxfw.jpg"}]
+[
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "year": "2001",
+    "type": "movie",
+    "createdAt": "2023-01-13T11:02:17.302Z",
+    "updatedAt": "2023-01-13T12:34:08.865Z",
+    "imdbID": "1al31zrhnklcueu2tz",
+    "poster": "https://res.cloudinary.com/di7navcq5/image/upload/v1673613249/epicode/netflixMedias/cs2uuh5y23001cgplxfw.jpg"
+  },
+  {
+    "title": "Matrix",
+    "year": "2001",
+    "type": "movie",
+    "createdAt": "2023-01-13T15:28:54.944Z",
+    "updatedAt": "2023-01-13T15:28:54.944Z",
+    "imdbID": "1al31zre6clcuocyox"
+  }
+]

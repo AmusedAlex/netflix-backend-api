@@ -21,11 +21,23 @@ export const saveNewMedia = async (newMediaData) => {
 };
 
 export const findMediaById = async (reqImdbID) => {
+  console.log("searching by ID");
   const medias = await getMedias();
 
   const media = medias.find((media) => media.imdbID === reqImdbID);
 
   return media;
+};
+
+export const findMediaBySearch = async (requestedSearch) => {
+  console.log("searching by search value");
+  const medias = await getMedias();
+
+  const mediasArray = await medias.filter((media) => {
+    return media.title.toLowerCase().includes(requestedSearch.toLowerCase());
+  });
+
+  return mediasArray;
 };
 
 export const getPDFreadableStream = (media) => {
