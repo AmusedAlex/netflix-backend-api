@@ -1,12 +1,17 @@
 import express from "express";
 import { checksMediaSchema, triggerBadRequest } from "./validator.js";
-import { findMediaById, saveNewMedia } from "../../lib/db/mediasTools.js";
+import {
+  findMediaById,
+  getPDFreadableStream,
+  saveNewMedia,
+} from "../../lib/db/mediasTools.js";
 import {
   cloadinaryUploader,
   getMedias,
   writeMedias,
 } from "../../lib/filesystem/tools.js";
 import createHttpError from "http-errors";
+import { pipeline } from "stream";
 
 const mediasRouter = express.Router();
 const { NotFound } = createHttpError;
@@ -81,10 +86,26 @@ mediasRouter.post("/:id/poster", cloadinaryUploader, async (req, res, next) => {
   }
 });
 
-// *********GET MEDIA AS PDF*********
+// *********GET SINGLE MEDIA AS PDF*********
 
 mediasRouter.get("/:id/pdf", async (req, res, next) => {
   try {
+    const media = await findMediaById(req.params.id);
+
+    if (media) {
+      res.setHeader(
+        "Content-Disposition",
+        `attachmet; filename=${media.imdbID}.pdf`
+      );
+
+      const source = getPDFreadableStream(media);
+      const destination = res;
+      pipeline(source, destination, (err) => {
+        if (err) console.log(err);
+      });
+    } else {
+      next(NotFound(`Media with imdbID ${req.params.imdbID} not found!`));
+    }
   } catch (error) {
     next(error);
   }
