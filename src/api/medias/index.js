@@ -1,10 +1,15 @@
 import express from "express";
-import uniqid from "uniqid";
-import httpErrors from "http-errors";
 import { checksMediaSchema, triggerBadRequest } from "./validator.js";
-import { saveNewMedia } from "../../lib/db/mediasTools.js";
+import { findMediaById, saveNewMedia } from "../../lib/db/mediasTools.js";
+import {
+  cloadinaryUploader,
+  getMedias,
+  writeMedias,
+} from "../../lib/filesystem/tools.js";
+import createHttpError from "http-errors";
 
 const mediasRouter = express.Router();
+const { NotFound } = createHttpError;
 
 // *********POST MEDIA*********
 
@@ -26,6 +31,9 @@ mediasRouter.post(
 
 mediasRouter.get("/", async (req, res, next) => {
   try {
+    const medias = await getMedias();
+
+    res.send(medias);
   } catch (error) {
     next(error);
   }
@@ -35,6 +43,14 @@ mediasRouter.get("/", async (req, res, next) => {
 
 mediasRouter.get("/:id", async (req, res, next) => {
   try {
+    const media = await findMediaById(req.params.id);
+
+    if (media) {
+      res.send(media);
+    } else {
+      //   console.log(NotFound(`Media with imdbID ${req.params.id} not found!`));
+      next(NotFound(`Media with imdbID ${req.params.imdbID} not found!`));
+    }
   } catch (error) {
     next(error);
   }
@@ -42,8 +58,24 @@ mediasRouter.get("/:id", async (req, res, next) => {
 
 // *********POST COVER TO SINGLE MEDIA*********
 
-mediasRouter.post("/:id/poster", async (req, res, next) => {
+mediasRouter.post("/:id/poster", cloadinaryUploader, async (req, res, next) => {
   try {
+    console.log(req.file);
+    const url = req.file.path;
+    const medias = await getMedias();
+    const index = medias.findIndex((media) => media.imdbID === req.params.id);
+
+    if (index !== -1) {
+      const oldMedia = medias[index];
+      const updatedMedia = { ...oldMedia, poster: url, updatedAt: new Date() };
+
+      medias[index] = updatedMedia;
+      await writeMedias(medias);
+
+      res.send(medias[index]);
+    } else {
+      next(NotFound(`Media with imdbID ${req.params.imdbID} not found!`));
+    }
   } catch (error) {
     next(error);
   }

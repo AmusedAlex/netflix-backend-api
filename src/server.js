@@ -9,7 +9,7 @@ import {
 } from "./errorHandlers.js";
 
 const server = express();
-const port = 1337;
+const port = process.env.PORT;
 
 server.use(cors());
 server.use(express.json());

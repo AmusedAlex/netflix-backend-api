@@ -17,3 +17,11 @@ export const saveNewMedia = async (newMediaData) => {
 
   return newMedia.imdbID;
 };
+
+export const findMediaById = async (reqImdbID) => {
+  const medias = await getMedias();
+
+  const media = medias.find((media) => media.imdbID === reqImdbID);
+
+  return media;
+};
