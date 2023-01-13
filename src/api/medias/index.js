@@ -89,34 +89,55 @@ mediasRouter.get("/:id", async (req, res, next) => {
   try {
     const media = await findMediaById(req.params.id);
 
-    if (media) {
+    if (media && media.Writer) {
       res.send(media);
     } else {
-      //   console.log(NotFound(`Media with imdbID ${req.params.id} not found!`));
-      next(NotFound(`Media with imdbID ${req.params.imdbID} not found!`));
+      try {
+        let responseOmdb = await fetch(
+          `http://www.omdbapi.com/?i=${req.params.id}&apikey=c559a0ab`,
+          { method: "GET" }
+        );
+        if (responseOmdb.ok) {
+          let data = await responseOmdb.json();
+          console.log(
+            "🚀 ~ file: index.js:102 ~ mediasRouter.get ~ data",
+            data //! RESPONSE WRONG ID
+          );
+
+          // if (data && data.length > 0)
+          const medias = await getMedias();
+
+          const index = medias.findIndex((med) => med.imdbID === req.params.id);
+          console.log(
+            "🚀 ~ file: index.js:105 ~ mediasRouter.get ~ index",
+            index
+          );
+
+          if (index !== -1) {
+            const updatedMedia = {
+              ...media,
+              ...data,
+            };
+
+            medias[index] = updatedMedia;
+
+            await writeMedias(medias);
+
+            res.send(medias[index]);
+          } else {
+            // if index not found:
+          }
+        } else {
+          next(NotFound(`No media with search ${req.query.search} found!`));
+        }
+      } catch (error) {
+        next(error);
+      }
     }
   } catch (error) {
     next(error);
   }
 });
-
-// // *********GET SINGLE MEDIA BY TITLE*********
-
-// mediasRouter.get("/", async (req, res, next) => {
-//   console.log(req.query.title);
-//   try {
-//     const mediasArray = await findMediaByTitle(req.query.title);
-
-//     if (mediasArray.length > 0) {
-//       res.send(mediasArray);
-//     } else {
-//       //   console.log(NotFound(`Media with imdbID ${req.params.id} not found!`));
-//       next(NotFound(`Media with title ${req.params.title} not found!`));
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 // *********POST COVER TO SINGLE MEDIA*********
 

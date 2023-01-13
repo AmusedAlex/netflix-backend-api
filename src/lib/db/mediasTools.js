@@ -41,6 +41,15 @@ export const findMediaById = async (reqImdbID) => {
   return media;
 };
 
+export const findMediaByIdToUpdateFromOmdb = async (reqImdbID) => {
+  console.log("searching by ID - omdb update");
+  const medias = await getMedias();
+
+  const media = medias.find((media) => media.imdbID === reqImdbID);
+
+  return media;
+};
+
 export const findMediaBySearch = async (requestedSearch) => {
   console.log("searching by search value");
   const medias = await getMedias();
