@@ -53,12 +53,15 @@ mediasRouter.get("/", async (req, res, next) => {
           );
           if (responseOmdb.ok) {
             let data = await responseOmdb.json();
+            if (data.Search.length > 0) {
+              let movies = data.Search;
 
-            let movies = data.Search;
+              await saveNewMediaFromOmdb(movies);
 
-            await saveNewMediaFromOmdb(movies);
-
-            res.send(movies);
+              res.send(movies);
+            } else {
+              next(NotFound(`No media with search ${req.query.search} found!`));
+            }
           } else {
             next(NotFound(`No media with search ${req.query.search} found!`));
           }
