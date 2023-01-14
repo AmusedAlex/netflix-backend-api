@@ -2,11 +2,11 @@
   "name": "netflix-backend-api",
   "version": "1.0.0",
   "description": "APIs for the netflix app we built during frontend course",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r dotenv/config -e js ./src/server.js"
+    "dev": "nodemon -r dotenv/config -e js ./src/server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
