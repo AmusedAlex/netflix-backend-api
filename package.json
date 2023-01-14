@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "APIs for the netflix app we built during frontend course",
   "type": "module",
+  "main": "./src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r dotenv/config -e js ./src/server.js",
-    "start": "node server.js"
+    "start": "node ./src/server.js"
   },
   "repository": {
     "type": "git",
