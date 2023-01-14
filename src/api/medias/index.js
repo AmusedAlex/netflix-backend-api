@@ -48,7 +48,9 @@ mediasRouter.get("/", async (req, res, next) => {
       } else {
         try {
           let responseOmdb = await fetch(
-            `${process.env.FETCH_URL}${req.query.search.toLowerCase()}`,
+            `${process.env.FETCH_URL}?apikey=${
+              process.env.FETCH_KEY
+            }&s=${req.query.search.toLowerCase()}`,
             { method: "GET" }
           );
           if (responseOmdb.ok) {
@@ -94,38 +96,48 @@ mediasRouter.get("/:id", async (req, res, next) => {
     } else {
       try {
         let responseOmdb = await fetch(
-          `http://www.omdbapi.com/?i=${req.params.id}&apikey=c559a0ab`,
+          `${process.env.FETCH_URL}?i=${req.params.id}&apikey=${process.env.FETCH_KEY}`,
           { method: "GET" }
         );
         if (responseOmdb.ok) {
           let data = await responseOmdb.json();
           console.log(
             "🚀 ~ file: index.js:102 ~ mediasRouter.get ~ data",
-            data //! RESPONSE WRONG ID
+            data
           );
 
-          // if (data && data.length > 0)
-          const medias = await getMedias();
-
-          const index = medias.findIndex((med) => med.imdbID === req.params.id);
-          console.log(
-            "🚀 ~ file: index.js:105 ~ mediasRouter.get ~ index",
-            index
-          );
-
-          if (index !== -1) {
-            const updatedMedia = {
-              ...media,
-              ...data,
-            };
-
-            medias[index] = updatedMedia;
-
-            await writeMedias(medias);
-
-            res.send(medias[index]);
+          if (data.Response === "False") {
+            next(NotFound(`Media with imdbID ${req.params.imdbID} not found!`));
           } else {
-            // if index not found:
+            const medias = await getMedias();
+
+            const index = medias.findIndex(
+              (med) => med.imdbID === req.params.id
+            );
+            console.log(
+              "🚀 ~ file: index.js:105 ~ mediasRouter.get ~ index",
+              index
+            );
+
+            if (index !== -1) {
+              const updatedMedia = {
+                ...media,
+                ...data,
+              };
+
+              medias[index] = updatedMedia;
+
+              await writeMedias(medias);
+
+              res.send(medias[index]);
+            } else {
+              try {
+                await saveNewMediaFromOmdb(data);
+                res.status(201).send(data);
+              } catch (error) {
+                next(error);
+              }
+            }
           }
         } else {
           next(NotFound(`No media with search ${req.query.search} found!`));
