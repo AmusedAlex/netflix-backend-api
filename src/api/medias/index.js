@@ -128,7 +128,7 @@ mediasRouter.get("/:id", async (req, res, next) => {
 
               medias[index] = updatedMedia;
 
-              await writeMedias(medias);
+              // await writeMedias(medias);
 
               res.send(medias[index]);
             } else {
