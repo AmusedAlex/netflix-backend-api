@@ -133,7 +133,7 @@ mediasRouter.get("/:id", async (req, res, next) => {
               res.send(medias[index]);
             } else {
               try {
-                await saveNewMediaFromOmdb(data);
+                // await saveNewMediaFromOmdb(data);
                 res.status(201).send(data);
               } catch (error) {
                 next(error);
