@@ -58,9 +58,8 @@ mediasRouter.get("/", async (req, res, next) => {
             if (data.Search && data.Search.length > 0) {
               let movies = data.Search;
 
-              // await saveNewMediaFromOmdb(movies);
-
               res.send(movies);
+              await saveNewMediaFromOmdb(movies);
             } else {
               next(NotFound(`No media with search ${req.query.search} found!`));
             }
@@ -128,13 +127,12 @@ mediasRouter.get("/:id", async (req, res, next) => {
 
               medias[index] = updatedMedia;
 
-              // await writeMedias(medias);
-
               res.send(medias[index]);
+              await writeMedias(medias);
             } else {
               try {
-                // await saveNewMediaFromOmdb(data);
                 res.status(201).send(data);
+                await saveNewMediaFromOmdb(data);
               } catch (error) {
                 next(error);
               }
