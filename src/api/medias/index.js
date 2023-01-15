@@ -95,6 +95,7 @@ mediasRouter.get("/:id", async (req, res, next) => {
       res.send(media);
     } else {
       try {
+        console.log("starting fetching");
         let responseOmdb = await fetch(
           `${process.env.FETCH_URL}?i=${req.params.id}&apikey=${process.env.FETCH_KEY}`,
           { method: "GET" }
